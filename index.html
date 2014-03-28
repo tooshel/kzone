@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
+    <!--<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css" />-->
+    <link rel="stylesheet" href="js/leaflet.css" />
+    <link rel="stylesheet" type="text/css" href="style/style.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+    <style>
+       html, body {height: 100%; width: 100%; padding: 0; position: absolute; background: #5e5e5e;}
+       /*.rowDiv {width: 100%; height: 50px; padding: 0; margin: 0; top:0; position: fixed; background-color: black;}*/
+       #map {width: 100%; height: 100%; padding: 0; margin: 0; top:0; position: fixed; margin-top:0px; margin-left:50px;} 
+
+      .navbar-inner{
+          position:relative;
+          padding-left:70px;
+      }
+      .title {         
+          background: url(./js/images/5e5e5e_small.png) repeat-y;       
+          position: absolute;
+          left: 10px;
+          width: 330px;
+          top:50px;
+          height: 100%;
+          z-index: 5;    
+      }
+
+      .end {                
+          position: absolute;
+          left: 10px;
+          width: 300px;
+          bottom:5px;
+          z-index: 999999;       
+      }
+
+      div.left{
+        position: absolute;
+        left: 60px;
+        top: 60px;
+        z-index: 3;
+      }
+
+      .bar {
+        fill: steelblue;
+      }
+
+      .bar:hover {
+        fill: brown;
+      }
+
+      .axis {
+        font: 10px sans-serif;
+      }
+
+      .axis path,
+
+      .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
+
+      .x.axis path {
+        display: none;
+      }
+
+      .d3-tip {
+        line-height: 1;
+        font-weight: bold;
+        padding: 12px;
+        width: 200px;
+        height: auto;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        border-radius: 2px;
+        z-index: 999999; 
+        left:100px;
+      }
+
+      /* Creates a small triangle extender for the tooltip */
+      .d3-tip:after {
+        box-sizing: border-box;
+        display: inline;
+        font-size: 10px;
+        width: 100%;
+        line-height: 1;
+        color: rgba(0, 0, 0, 0.8);
+        content: "\25BC";
+        position: absolute;
+        text-align: center;
+      }
+
+      /* Style northward tooltips differently */
+      .d3-tip.n:after {
+        margin: -1px 0 0 0;
+        top: 100%;
+        left: 0;
+      }      
+    </style>
+
+    <title>kzone</title>
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+                <input id="placeInput" type="text" class="form-control" placeholder="enter a city name">
+            </div>
+          </form>
+
+
+          <form class="navbar-form navbar-right">
+             <div class="col-xs-3">
+                <select id="subgroup" class="form-control" style="width:180px;">
+                  <option selected disabled>sub climate category</option>
+                </select>
+            </div>
+          </form>
+
+
+          <form class="navbar-form navbar-right">
+             <div class="col-xs-3">
+                <select id="maingroup" class="form-control" style="width:180px;">
+                  <option selected disabled>major climate region</option>
+                  <option value="Tropical climate">Tropical climate</option>
+                  <option value="Desert climate">Desert climate</option>
+                  <option value="Semiarid climate">Semiarid climate</option>
+                  <option value="Mediterranean climate">Mediterranean climate</option>
+                  <option value="Oceanic climate">Oceanic climate</option>
+                  <option value="Humid continental climate">Humid continental climate</option>
+                  <option value="Humid subtropical climate">Humid subtropical climate</option>
+                  <option value="Continental subarctic climate">Continental subarctic climate</option>
+                  <option value="Polar climate">Polar climate</option>
+                </select>  
+            </div>
+          </form>    
+        </div>
+      </div>
+    </div>
+
+    <div class="title">
+        <p id="title" style="color: white; width: 325px;"></p>
+        <h4 id="T_chart_title" style="color: white; width: 300px;"></h4>
+        <div id="T_chart"></div>
+        <h4 id="P_chart_title"style="color: white; width: 300px;"></h4>
+        <div id="P_chart"></div>
+    </div>
+    <!-- <div id="overlay"></div> -->
+    <div class="container-fluid"  style="margin:0;padding:0;">
+      <div id='map'></div>
+    </div>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/leaflet.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+    <script src="js/leaflet-providers.js"></script>
+    <script src="js/chart.js"></script>
+    <script src="js/map.js"></script>
+
+  </body>
+</html>
