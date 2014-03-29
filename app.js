@@ -2,7 +2,8 @@ var pg = require('pg');
 var express = require('express');
 var app = express();
 
-var connectionString = "postgres://postgres:0792441000@localhost:5433/postgis"
+//var connectionString = "postgres://postgres:0792441000@localhost:5433/postgis"
+var connectionString = "postgres://chris:Salisbury2Crabs@localhost:5432/vanni_test"
 
 app.all('/*', function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -10,8 +11,12 @@ app.all('/*', function(req, res, next) {
   next();
 });
 
+app.configure(function() {
+  app.use(express.static(__dirname + '/public'));
+});
+
 app.get('/', function(req,res){
-  res.send('hello kzone app!');
+  res.sendfile('./public/index.html');
 })
 
 app.get('/findCity', function(req, res){
