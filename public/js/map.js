@@ -2,6 +2,7 @@ var map;
 var kzoneName, kzone, coords, label, searchCityMarker;
 var city='';
 
+console.log(document.URL)
 var map = L.map('map', {zoomControl:false}).setView([18.967839, -20.836409], 2);
 
 // loadChartData("./js/tempe.js");
